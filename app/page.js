@@ -12,7 +12,7 @@ async function getPosts() {
         nodes {
           slug
           title
-          content // Add this line to fetch the post content
+          content
           featuredImage {
             node {
               sourceUrl
@@ -25,13 +25,6 @@ async function getPosts() {
   const { data } = await client.query({ query: GET_POSTS });
   return data.posts.nodes;
 }
-// ... rest of the code is unchanged
-
-
-
-
-// app/page.js
-// ... (imports and getPosts function) ...
 
 export default async function Home() {
   const posts = await getPosts();
@@ -51,7 +44,6 @@ export default async function Home() {
                 height={300}
               />
             )}
-            {/* Add this section to render the post content */}
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </li>
         ))}

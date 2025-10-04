@@ -22,8 +22,17 @@ async function getPosts() {
       }
     }
   `;
-  const { data } = await client.query({ query: GET_POSTS });
-  return data.posts.nodes;
+  
+  try {
+    const { data } = await client.query({ 
+      query: GET_POSTS,
+      fetchPolicy: "no-cache"
+    });
+    return data?.posts?.nodes || [];
+  } catch (error) {
+    console.error("GraphQL Error:", error);
+    return [];
+  }
 }
 
 export default async function Home() {
@@ -32,22 +41,27 @@ export default async function Home() {
   return (
     <main>
       <h1>My Headless Blog</h1>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.slug}>
-            <h2>{post.title}</h2>
-            {post.featuredImage?.node?.sourceUrl && (
-              <Image
-                src={post.featuredImage.node.sourceUrl}
-                alt={post.title}
-                width={500}
-                height={300}
-              />
-            )}
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
-          </li>
-        ))}
-      </ul>
+      {posts.length === 0 ? (
+        <p>No posts found.</p>
+      ) : (
+        <ul>
+          {posts.map((post) => (
+            <li key={post.slug}>
+              <h2>{post.title}</h2>
+              {post.featuredImage?.node?.sourceUrl && (
+                <Image
+                  src={post.featuredImage.node.sourceUrl}
+                  alt={post.title}
+                  width={500}
+                  height={300}
+                  priority={false}
+                />
+              )}
+              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }

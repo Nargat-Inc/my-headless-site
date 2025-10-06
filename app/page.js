@@ -5,6 +5,7 @@ import { gql } from "@apollo/client";
 import { client } from "../lib/apollo";
 import Image from "next/image";
 
+
 async function getPosts() {
   const GET_POSTS = gql`
     query AllPosts {
@@ -26,7 +27,12 @@ async function getPosts() {
   try {
     const { data } = await client.query({ 
       query: GET_POSTS,
-      fetchPolicy: "no-cache"
+      fetchPolicy: "no-cache",
+      context: {
+        fetchOptions: {
+          cache: "no-store", 
+        },
+      },
     });
     return data?.posts?.nodes || [];
   } catch (error) {
@@ -34,6 +40,9 @@ async function getPosts() {
     return [];
   }
 }
+
+
+
 
 export default async function Home() {
   const posts = await getPosts();

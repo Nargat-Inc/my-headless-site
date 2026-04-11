@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/api";
+import { getPage } from "../../lib/api";
 
 export default async function Page({ params }) {
   const page = await getPage(params.slug);

@@ -1,7 +1,22 @@
-import { getPage } from "../../lib/api";
+import { gql } from "@apollo/client";
+import { client } from "../../lib/apollo";
 
 export default async function Page({ params }) {
-  const page = await getPage(params.slug);
+  const slug = params.slug;
+
+  const { data } = await client.query({
+    query: gql`
+      query GetPage($slug: String!) {
+        pageBy(uri: $slug) {
+          title
+          content
+        }
+      }
+    `,
+    variables: { slug },
+  });
+
+  const page = data?.pageBy;
 
   if (!page) return <div>Page not found</div>;
 

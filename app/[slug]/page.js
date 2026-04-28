@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { client } from "../../lib/apollo";
 
 export default async function Page({ params }) {
-  const slug = params.slug;
+  const { slug } = await params;
 
   const { data } = await client.query({
     query: gql`

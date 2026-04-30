@@ -19,7 +19,9 @@ export async function GET(req, { params }) {
               heroDescription1
               heroDescription2
               heroDescription3
-              heroImage
+              heroImage {
+  mediaItemUrl
+}
             }
           }
         }

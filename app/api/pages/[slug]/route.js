@@ -28,6 +28,11 @@ export async function GET(req, { params }) {
     body: JSON.stringify({ query, variables: { slug } }),
   });
 
-  const { data } = await res.json();
-  return Response.json(data.pageBy);
+  const json = await res.json();
+
+  if (json.errors) {
+    return Response.json({ error: json.errors[0].message }, { status: 500 });
+  }
+
+  return Response.json(json.data?.pageBy ?? null);
 }

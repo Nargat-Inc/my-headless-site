@@ -8,23 +8,28 @@ export async function GET(req, { params }) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data } = await client.query({
-    query: gql`
-      query GetPage($slug: String!) {
-        pageBy(uri: $slug) {
-          title
-          aboutUsPage {
-            heroTitle
-            heroDescription1
-            heroDescription2
-            heroDescription3
-            heroImage
+  try {
+    const { data } = await client.query({
+      query: gql`
+        query GetPage($slug: String!) {
+          pageBy(uri: $slug) {
+            title
+            aboutUsPage {
+              heroTitle
+              heroDescription1
+              heroDescription2
+              heroDescription3
+              heroImage
+            }
           }
         }
-      }
-    `,
-    variables: { slug },
-  });
+      `,
+      variables: { slug },
+      fetchPolicy: "no-cache",
+    });
 
-  return Response.json(data.pageBy);
+    return Response.json(data.pageBy);
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
 }
